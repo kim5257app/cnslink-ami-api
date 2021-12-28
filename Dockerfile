@@ -1,4 +1,4 @@
-FROM node:12.18.3
+FROM node:14.17.6
 MAINTAINER Jaegu Kim <kim5257.app@gmail.com>
 
 RUN apt-get update
