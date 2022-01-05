@@ -1,10 +1,13 @@
 const express = require('express');
 const http = require('http');
+const cors = require('cors');
 const logger = require('../debug/logger');
 
 const indexRoutes = require('./routes/index');
 
 const app = express();
+
+app.use(cors());
 
 // 웹 요청 경로 설정
 app.use('/', indexRoutes);
