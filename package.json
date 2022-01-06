@@ -7,9 +7,12 @@
     "start": "node index.js"
   },
   "dependencies": {
+    "@socket.io/redis-adapter": "^7.1.0",
     "cors": "^2.8.5",
     "express": "^4.17.2",
     "firebase-admin": "^10.0.1",
+    "mariadb": "^2.5.5",
+    "redis": "^4.0.1",
     "socket.io": "^4.4.0",
     "uuid": "^8.3.2",
     "winston": "^3.3.3",

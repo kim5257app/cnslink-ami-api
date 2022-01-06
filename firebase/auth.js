@@ -1,6 +1,5 @@
-const { getAuth } = require('firebase-admin/lib/auth');
 const app = require('./firebase');
 
-const auth = getAuth(app);
+const auth = app.auth();
 
 module.exports.verifyIdToken = async (token) => auth.verifyIdToken(token);

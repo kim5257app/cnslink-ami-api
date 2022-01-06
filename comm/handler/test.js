@@ -1,4 +1,4 @@
-const { onHandler } = require('./helper');
+const { onHandler } = require('../helper');
 
 exports.rules = {
   'test.echo': {
