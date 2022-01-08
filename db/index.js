@@ -38,7 +38,7 @@ class Database {
       conn = await this.pool.getConnection();
 
       const action = (batch) ? conn.batch : conn.query;
-      const namedPlaceholders = !(args instanceof Array);
+      const namedPlaceholders = (batch) ? !(args[0] instanceof Array) : !(args instanceof Array);
 
       let result = await action({ sql, namedPlaceholders }, args);
 

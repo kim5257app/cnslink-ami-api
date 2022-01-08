@@ -6,10 +6,12 @@ const Error = require('../debug/error');
 
 const test = require('./handler/test');
 const users = require('./handler/users');
+const products = require('./handler/products');
 
 const rules = {
   ...test.rules,
   ...users.rules,
+  ...products.rules,
 };
 
 /**
@@ -107,6 +109,7 @@ function initialize({ httpServer, redis }) {
 
     test.initHandler(io, socket);
     users.initHandler(io, socket);
+    products.initHandler(io, socket);
   });
 }
 
