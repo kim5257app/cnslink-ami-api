@@ -20,4 +20,4 @@ VOLUME /app/upload
 
 ENTRYPOINT ["/bin/sh", "run.sh"]
 
-EXPOSE 3200
+EXPOSE 3000
