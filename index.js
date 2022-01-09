@@ -14,6 +14,9 @@ const logger = require('./debug/logger');
   logger.info('Web initialized');
 
   logger.info('Comm initializing...');
-  comm.initialize({ httpServer: web.server });
+  comm.initialize({
+    httpServer: web.server,
+    web: config.web,
+  });
   logger.info('Comm initialized');
 })();
