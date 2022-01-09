@@ -84,10 +84,9 @@ function checkForm(socket) {
   });
 }
 
-function initialize({ httpServer, redis, web }) {
+function initialize({ httpServer, redis }) {
   const io = new Server(httpServer, {
     cors: { origin: '*' },
-    path: web.path,
   });
 
   // Redis Cluster 설정
