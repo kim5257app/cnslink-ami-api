@@ -24,6 +24,7 @@ const condTables = {
   ge: '>=?',
   lt: '<?',
   le: '<=?',
+  none: 'IS NULL',
 };
 
 function transFilterToSql(filter) {
@@ -107,7 +108,9 @@ module.exports = {
 
       return `${sel}${where}`;
     })(),
-    args: args.filters.map((arg) => ((arg.condition === 'inc') ? `%${arg.value}%` : arg.value)),
+    args: args.filters
+      .filter((arg) => (arg.condition !== 'none'))
+      .map((arg) => ((arg.condition === 'inc') ? `%${arg.value}%` : arg.value)),
     done: (result) => (result[0]),
   }),
   getProducts: (args) => ({
@@ -149,7 +152,9 @@ module.exports = {
       return `${sel}${lookup}${order}`;
     })(),
     args: [
-      ...args.filters.map((arg) => ((arg.condition === 'inc') ? `%${arg.value}%` : arg.value)),
+      ...args.filters
+        .filter((arg) => (arg.condition !== 'none'))
+        .map((arg) => ((arg.condition === 'inc') ? `%${arg.value}%` : arg.value)),
       (args.page - 1) * args.itemsPerPage,
       args.itemsPerPage,
     ],

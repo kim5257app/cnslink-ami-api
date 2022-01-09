@@ -4,13 +4,17 @@ const cors = require('cors');
 const logger = require('../debug/logger');
 
 const indexRoutes = require('./routes/index');
+const productsRoutes = require('./routes/products');
 
 const app = express();
 
 app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 // 웹 요청 경로 설정
 app.use('/', indexRoutes);
+app.use('/products', productsRoutes);
 
 const server = http.createServer(app);
 
