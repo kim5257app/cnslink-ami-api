@@ -132,7 +132,7 @@ module.exports = {
         "  nbiot_rsrq AS nbiotRSRQ,\n" +
         "  nbiot_rssi AS nbiotRSSI,\n" +
         "  nbiot_tx_power AS nbiotTxPower,\n" +
-        "  usim, ssim, result, memo,\n" +
+        "  usim, ssim, ctn, result, memo,\n" +
         "  service_code AS serviceCode,\n" +
         "  `timestamp`\n" +
         "FROM products\n";
@@ -158,5 +158,13 @@ module.exports = {
       (args.page - 1) * args.itemsPerPage,
       args.itemsPerPage,
     ],
+  }),
+  updateCtn: (args) => ({
+    batch: true,
+    sql:
+      "UPDATE products\n" +
+      "SET ctn=:ctn\n" +
+      "WHERE model=:model AND `serial`=:serial",
+    args,
   }),
 };

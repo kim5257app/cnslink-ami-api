@@ -9,6 +9,40 @@ const xlsx = require('../../util/xlsx');
 
 const router = express.Router();
 
+router.post('/', async (req, res) => {
+  try {
+    logger.info(`(${req.path}): ${req.body}`);
+    const token = req.header('token');
+
+    if (token == null) {
+      Error.throwFail(
+        'WRONG_ARGUMENT',
+        'Wrong argument',
+        400,
+      );
+    }
+
+    const decodedIdToken = await verifyIdToken(req.header('token'));
+    const userInfo = await db.getInstance()
+      .query(usersQuery.getUserInfo({ id: decodedIdToken.uid }));
+
+    if (userInfo == null || !userInfo.manager) {
+      Error.throwFail(
+        'ACCESS_DENIED',
+        'Access Denied',
+        401,
+      );
+    }
+
+    const buffer = req.body;
+
+    console.log('buffer:', buffer);
+  } catch (error) {
+    const status = (error.code > 0) ? error.code : 500;
+    res.status(status).json(error);
+  }
+});
+
 router.post('/file/xlsx', async (req, res) => {
   try {
     logger.info(`(${req.path}): ${req.body}`);

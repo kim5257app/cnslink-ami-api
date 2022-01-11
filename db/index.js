@@ -40,13 +40,27 @@ class Database {
       const action = (batch) ? conn.batch : conn.query;
       const namedPlaceholders = (batch) ? !(args[0] instanceof Array) : !(args instanceof Array);
 
+      if (batch) {
+        await conn.beginTransaction();
+      }
+
       let result = await action({ sql, namedPlaceholders }, args);
+
+      if (batch) {
+        await conn.commit();
+      }
 
       if (done != null) {
         result = done(result);
       }
 
       return result;
+    } catch (error) {
+      if (conn && batch) {
+        await conn.rollback();
+      }
+
+      throw error;
     } finally {
       if (conn) { await conn.release(); }
     }
