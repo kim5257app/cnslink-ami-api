@@ -3,6 +3,7 @@ const XLSX = require('sheetjs-style');
 async function exportProducts(items) {
   const book = XLSX.utils.book_new();
   const sheet = XLSX.utils.json_to_sheet(items.map((item) => ({
+    serviceCode: item.serviceCode,
     model: item.model,
     serial: item.serial,
     firmware: item.firmware,
