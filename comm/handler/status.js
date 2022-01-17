@@ -9,7 +9,7 @@ exports.rules = {
   },
   'status.list.get': {
     page: { type: 'number', min: 0 },
-    itemsPerPage: { type: 'number', min: 5, max: 100 },
+    itemsPerPage: { type: 'number', max: 100 },
     sortBy: { type: 'array' },
     sortDesc: { type: 'array' },
     filters: { type: 'array' },

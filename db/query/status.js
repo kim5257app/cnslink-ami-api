@@ -106,7 +106,7 @@ module.exports = {
         "  (SELECT ctn FROM recent_products_status\n" +
         where +
         order +
-        offset +
+        ((args.itemsPerPage > 0) ? offset : "") +
         "  ) AS lookup\n" +
         "ON recent_products_status.ctn=lookup.ctn\n";
 
@@ -116,8 +116,10 @@ module.exports = {
       ...args.filters
         .filter((arg) => (arg.condition !== 'none'))
         .map((arg) => ((arg.condition === 'inc') ? `%${arg.value}%` : arg.value)),
-      (args.page - 1) * args.itemsPerPage,
-      args.itemsPerPage,
+      ...((args.itemsPerPage > 0) ? [
+        (args.page - 1) * args.itemsPerPage,
+        args.itemsPerPage,
+      ] : []),
     ],
   }),
 };

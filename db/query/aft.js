@@ -145,7 +145,7 @@ module.exports = {
         "  FROM products\n" +
         where +
         order +
-        offset +
+        ((args.itemsPerPage > 0) ? offset : "") +
         "  ) AS lookup\n" +
         "ON products.model=lookup.model AND products.`serial`=lookup.`serial`";
 
@@ -155,8 +155,10 @@ module.exports = {
       ...args.filters
         .filter((arg) => (arg.condition !== 'none'))
         .map((arg) => ((arg.condition === 'inc') ? `%${arg.value}%` : arg.value)),
-      (args.page - 1) * args.itemsPerPage,
-      args.itemsPerPage,
+      ...((args.itemsPerPage > 0) ? [
+        (args.page - 1) * args.itemsPerPage,
+        args.itemsPerPage,
+      ] : []),
     ],
   }),
   updateCtn: (args) => ({
