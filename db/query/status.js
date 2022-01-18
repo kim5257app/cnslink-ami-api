@@ -34,8 +34,8 @@ const condTables = {
 };
 
 function transFilterToSql(filter) {
-  const operator = (filter.operator === 'and' || filter.operator === 'or')
-    ? filter.operator.toUpperCase() : '';
+  const operator = (filter.where === 'and' || filter.where === 'or')
+    ? filter.where.toUpperCase() : '';
   const column = (fields[filter.column] != null)
     ? fields[filter.column] : filter.column;
   const condition = condTables[filter.condition];

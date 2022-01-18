@@ -72,7 +72,7 @@ router.post('/file/xlsx', async (req, res) => {
     const items = await db.getInstance()
       .query(aftQuery.getProducts({
         page: 1,
-        itemsPerPage: 1000,
+        itemsPerPage: 100000,
         sortBy: [],
         sortDesc: [],
         filters: req.body.filters,

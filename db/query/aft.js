@@ -28,8 +28,8 @@ const condTables = {
 };
 
 function transFilterToSql(filter) {
-  const operator = (filter.operator === 'and' || filter.operator === 'or')
-    ? filter.operator.toUpperCase() : '';
+  const operator = (filter.where === 'and' || filter.where === 'or')
+    ? filter.where.toUpperCase() : '';
   const column = (fields[filter.column] != null)
     ? fields[filter.column] : filter.column;
   const condition = condTables[filter.condition];
@@ -100,7 +100,7 @@ module.exports = {
   summaryProducts: (args) => ({
     sql: (() => {
       const where = (args.filters.length > 0)
-        ? `WHERE ${args.filters.map((filter) => (transFilterToSql(filter)))}` : '';
+        ? `WHERE ${args.filters.map((filter) => (transFilterToSql(filter))).join('\n')}` : '';
 
       const sel =
         "SELECT COUNT(*) AS `count`\n" +
@@ -116,7 +116,7 @@ module.exports = {
   getProducts: (args) => ({
     sql: (() => {
       const where = (args.filters.length > 0)
-        ? `WHERE ${args.filters.map((filter) => (transFilterToSql(filter)))}` : '';
+        ? `WHERE ${args.filters.map((filter) => (transFilterToSql(filter))).join('\n')}` : '';
 
       const order = transSortToSql(args);
 
