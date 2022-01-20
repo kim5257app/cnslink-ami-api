@@ -21,8 +21,3 @@ const ami = require('./util/ami');
   });
   logger.info('Comm initialized');
 })();
-
-ami.deviceEntityIdByCtn({
-  ctn: '01222430000',
-  usim: '8982068086001950707F',
-});
