@@ -11,8 +11,8 @@ function javaHash(input) {
   return md5Bytes.toString('hex');
 }
 
-function deviceEntityIdByCtn({ ctn, usim, serviceCode }) {
-  const hash = javaHash(`${ctn}${usim}`);
+function deviceEntityIdByCtn({ ctn, iccid, serviceCode }) {
+  const hash = javaHash(`${ctn}${iccid.slice(0, 19)}`);
   return `ASN_CSE-D-${hash.slice(0, 5)}${hash.slice(-5)}-${serviceCode}`;
 }
 
