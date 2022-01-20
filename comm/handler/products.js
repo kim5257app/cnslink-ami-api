@@ -2,6 +2,7 @@ const db = require('../../db/index');
 const aftQuery = require('../../db/query/aft');
 const { onHandler } = require('../helper');
 const Error = require('../../debug/error');
+const ami = require('../../util/ami');
 
 exports.rules = {
   'products.summary.get': {

@@ -33,7 +33,7 @@ function usimToIccid(usim) {
 
   const code = mode.charCodeAt(0).toString(10);
 
-  const num = 10 - ((
+  const num = (10 - ((
     32 + sliceNumber(code, 0, 1) + adjustNumber(sliceNumber(code, -1) * 2)
     + sliceNumber(mode, 1, 2) + adjustNumber(sliceNumber(mode, 2, 3) * 2)
     + sliceNumber(mode, 3, 4)
@@ -41,7 +41,7 @@ function usimToIccid(usim) {
     + adjustNumber(sliceNumber(serial, 2, 3) * 2) + sliceNumber(serial, 3, 4)
     + adjustNumber(sliceNumber(serial, 4, 5) * 2) + sliceNumber(serial, 5, 6)
     + adjustNumber(sliceNumber(serial, 6, 7) * 2)
-  ) % 10);
+  ) % 10)) % 10;
 
   return `898206${code}${mode.slice(1, 4)}${serial}${num}F`;
 }
