@@ -4,6 +4,7 @@ const Error = require('../../debug/error');
 const secureQuery = require('../../db/query/secure');
 const aftQuery = require('../../db/query/aft');
 const ami = require('../../util/ami');
+const secureScheduler = require('../../secure/scheduler');
 
 exports.rules = {
   'secure.apply': {
@@ -63,6 +64,40 @@ exports.initHandler = (io, socket) => {
     await db.getInstance()
       .query(secureQuery.applySecure(applyItems));
 
+    await secureScheduler.beginSecureProcess();
+
     resp({ result: 'success' });
+  });
+
+  onHandler(socket, 'secure.summary.get', async (payload, resp) => {
+    const { userInfo } = socket.data;
+
+    if (userInfo == null || !userInfo.manager) {
+      Error.throwFail('ACCESS_DENIED', 'Access Denied');
+    }
+
+    const item = await db.getInstance()
+      .query(secureQuery.summarySecureApply(payload));
+
+    resp({
+      result: 'success',
+      item,
+    });
+  });
+
+  onHandler(socket, 'secure.list.get', async (payload, resp) => {
+    const { userInfo } = socket.data;
+
+    if (userInfo == null || !userInfo.manager) {
+      Error.throwFail('ACCESS_DENIED', 'Access Denied');
+    }
+
+    const items = await db.getInstance()
+      .query(secureQuery.getSecureApply(payload));
+
+    resp({
+      result: 'success',
+      items,
+    });
   });
 };
