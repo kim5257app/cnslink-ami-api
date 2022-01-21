@@ -3,7 +3,7 @@ const web = require('./web');
 const comm = require('./comm');
 const config = require('./config/config');
 const logger = require('./debug/logger');
-const ami = require('./util/ami');
+const secureScheduler = require('./secure/scheduler');
 
 (async () => {
   logger.info('DB initializing...');
@@ -20,4 +20,8 @@ const ami = require('./util/ami');
     web: config.web,
   });
   logger.info('Comm initialized');
+
+  logger.info('Start SecureProcessing...');
+  await secureScheduler.beginSecureProcess();
+  logger.info('Done SecureProcessing');
 })();
