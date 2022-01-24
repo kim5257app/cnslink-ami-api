@@ -13,6 +13,9 @@ exports.rules = {
   'secure.apply.filter': {
     filters: { type: 'array' },
   },
+  'secure.release.filter': {
+    filters: { type: 'array' },
+  },
   'secure.summary.get': {
     filters: { type: 'array' },
   },
@@ -63,6 +66,31 @@ exports.initHandler = (io, socket) => {
 
     await db.getInstance()
       .query(secureQuery.applySecure(applyItems));
+
+    await secureScheduler.beginSecureProcess();
+
+    resp({ result: 'success' });
+  });
+
+  onHandler(socket, 'secure.release.filter', async (payload, resp) => {
+    const { userInfo } = socket.data;
+
+    if (userInfo == null || !userInfo.manager) {
+      Error.throwFail('ACCESS_DENIED', 'Access Denied');
+    }
+
+    // 정보 조회
+    const items = await db.getInstance()
+      .query(secureQuery.getSecureApply({
+        page: 1,
+        itemsPerPage: 100000,
+        sortBy: [],
+        sortDesc: [],
+        filters: payload.filters,
+      }));
+
+    await db.getInstance()
+      .query(secureQuery.releaseSecure(items));
 
     await secureScheduler.beginSecureProcess();
 

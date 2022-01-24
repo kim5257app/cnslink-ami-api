@@ -1,6 +1,7 @@
 const db = require('../db');
 const request = require('./request');
 const secureQuery = require('../db/query/secure');
+const comm = require('../comm/index');
 
 let items = [];
 let handle = null;
@@ -56,9 +57,47 @@ async function secureProcess() {
           .query(secureQuery.updateInfo(updatedItem));
         break;
       }
+      case 4: {
+        const res = await request.deleteSecurePlatform(item);
+
+        const info = (res.status === 200) ? {
+          status: 5,
+        } : {
+          status: 6,
+        };
+
+        const updatedItem = {
+          ...item,
+          ...info,
+        };
+
+        await db.getInstance()
+          .query(secureQuery.updateInfo(updatedItem));
+        break;
+      }
+      case 5: {
+        const res = await request.getSecurePlatform(item);
+
+        if (res.status === 404) {
+          await db.getInstance()
+            .query(secureQuery.removeSecure(item));
+        } else {
+          await db.getInstance()
+            .query(secureQuery.updateInfo({
+              ...item,
+              status: 6,
+            }));
+        }
+        break;
+      }
       default:
         break;
     }
+
+    // 처리 중 정보를 공지
+    comm.getInstance().to('manager').emit('secure.process.notify', {
+      remain: items.length,
+    });
 
     handle = setTimeout(secureProcess, 1000);
   } else {

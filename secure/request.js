@@ -4,6 +4,8 @@ const { citygas: request } = require('../config/config').adapt;
 const host = `${request.protocol}://${request.host}:${request.port}`;
 
 async function insertSecurePlatform({ ctn, entityId, serviceCode }) {
+  const shortEntityId = entityId.split('-')[2];
+
   return axios({
     url: `${host}/~/CB00053/uplus1-${serviceCode}`,
     headers: {
@@ -16,8 +18,8 @@ async function insertSecurePlatform({ ctn, entityId, serviceCode }) {
     responseType: 'json',
     data: {
       'm2m:ae': {
-        rn: `ae-${entityId}`,
-        api: `api-${entityId}`,
+        rn: `ae-${shortEntityId}`,
+        api: `api-${shortEntityId}`,
         rr: false,
         dkey: ctn,
       },
@@ -28,7 +30,7 @@ async function insertSecurePlatform({ ctn, entityId, serviceCode }) {
 
 async function getSecurePlatform({ aei, entityId, serviceCode }) {
   return axios({
-    url: `${host}/~/CB00053/uplus1-${serviceCode}/ae-${entityId}`,
+    url: `${host}/~/CB00053/uplus1-${serviceCode}/ae-${entityId.split('-')[2]}`,
     headers: {
       Accept: 'application/json',
       'X-M2M-Origin': aei,
@@ -42,7 +44,7 @@ async function getSecurePlatform({ aei, entityId, serviceCode }) {
 
 async function deleteSecurePlatform({ aei, entityId, serviceCode }) {
   return axios({
-    url: `${host}/~/CB00053/uplus1-${serviceCode}/ae-${entityId}`,
+    url: `${host}/~/CB00053/uplus1-${serviceCode}/ae-${entityId.split('-')[2]}`,
     headers: {
       'X-M2M-Origin': aei,
       'X-M2M-RI': 12345,

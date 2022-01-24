@@ -32,6 +32,10 @@ exports.initHandler = (io, socket) => {
     // 해당 연결에 사용자 정보 추가
     socket.data.userInfo = userInfo;
 
+    if (userInfo.manager) {
+      socket.join('manager');
+    }
+
     resp({
       result: 'success',
       userInfo,

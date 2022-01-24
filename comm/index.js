@@ -90,8 +90,10 @@ function checkForm(socket) {
   });
 }
 
+let io = null;
+
 function initialize({ httpServer, redis }) {
-  const io = new Server(httpServer, {
+  io = new Server(httpServer, {
     cors: { origin: '*' },
   });
 
@@ -123,3 +125,4 @@ function initialize({ httpServer, redis }) {
 }
 
 module.exports.initialize = initialize;
+module.exports.getInstance = () => (io);

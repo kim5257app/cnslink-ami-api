@@ -63,6 +63,20 @@ module.exports = {
       "VALUES (:iccid, :ctn, :entityId)",
     args,
   }),
+  releaseSecure: (args) => ({
+    batch: true,
+    sql:
+      "UPDATE secure_apply\n" +
+      "SET `status`=4\n" +
+      "WHERE ctn=:ctn AND iccid=:iccid",
+    args,
+  }),
+  removeSecure: (args) => ({
+    sql:
+      "DELETE FROM secure_apply\n" +
+      "WHERE ctn=:ctn AND iccid=:iccid",
+    args,
+  }),
   updateInfo: (args) => ({
     sql:
       "UPDATE secure_apply\n" +
@@ -84,7 +98,7 @@ module.exports = {
       "  products.iccid=secure_apply.iccid\n" +
       "  AND products.ctn=secure_apply.ctn\n" +
       "WHERE\n" +
-      "  `status` < 2\n" +
+      "  `status` IN (0, 1, 4, 5)\n" +
       "ORDER BY `status` DESC\n" +
       "LIMIT 100",
     args,
