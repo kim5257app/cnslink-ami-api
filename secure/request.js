@@ -9,13 +9,13 @@ async function insertSecurePlatform({ ctn, entityId, serviceCode }) {
   return axios({
     url: `${host}/~/CB00053/uplus1-${serviceCode}`,
     headers: {
-      'Content-Type': 'application/vnd.onem2m-res+xml;ty=2',
-      Accept: 'application/json',
+      'Content-Type': 'application/json;ty=2',
+      Accept: 'application/xml',
       'X-M2M-Origin': 'S',
       'X-M2M-RI': 12345,
     },
     method: 'post',
-    responseType: 'json',
+    responseType: 'text',
     data: {
       'm2m:ae': {
         rn: `ae-${shortEntityId}`,

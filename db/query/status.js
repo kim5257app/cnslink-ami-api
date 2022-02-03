@@ -35,7 +35,7 @@ const condTables = {
 
 function transFilterToSql(filter) {
   const operator = (filter.where === 'and' || filter.where === 'or')
-    ? filter.where.toUpperCase() : '';
+    ? filter.where.toUpperCase() : 'and';
   const column = (fields[filter.column] != null)
     ? fields[filter.column] : filter.column;
   const condition = condTables[filter.condition];
@@ -67,7 +67,7 @@ module.exports = {
   summaryStatus: (args) => ({
     sql: (() => {
       const where = (args.filters.length > 0)
-        ? `WHERE ${args.filters.map((filter) => (transFilterToSql(filter)))}` : '';
+        ? `WHERE ctn IS NOT NULL ${args.filters.map((filter) => (transFilterToSql(filter)))}` : 'WHERE ctn IS NOT NULL\n';
 
       const sel =
         "SELECT COUNT(*) AS `count`\n" +
@@ -83,7 +83,7 @@ module.exports = {
   getStatus: (args) => ({
     sql: (() => {
       const where = (args.filters.length > 0)
-        ? `WHERE ${args.filters.map((filter) => (transFilterToSql(filter)))}` : '';
+        ? `WHERE ctn IS NOT NULL ${args.filters.map((filter) => (transFilterToSql(filter)))}` : 'WHERE ctn IS NOT NULL\n';
 
       const order = transSortToSql(args);
 

@@ -1,3 +1,4 @@
+const xmlParser = require('xml-js');
 const db = require('../db');
 const request = require('./request');
 const secureQuery = require('../db/query/secure');
@@ -20,9 +21,13 @@ async function secureProcess() {
     switch (item.status) {
       case 0: {
         const res = await request.insertSecurePlatform(item);
+        const data = xmlParser.xml2js(res.data, { compact: true });
+
+        console.log('insert:', res.status, JSON.stringify(data));
 
         const info = (res.status === 201 || res.status === 409) ? {
-          aei: res.data['m2m:ae'].aei,
+          // eslint-disable-next-line no-underscore-dangle
+          aei: data['m2m:ae'].aei._text,
           status: 1,
         } : {
           aei: null,
@@ -42,6 +47,9 @@ async function secureProcess() {
       }
       case 1: {
         const res = await request.getSecurePlatform(item);
+
+        console.log('get:', res.status, JSON.stringify(res.data));
+
         const info = (res.status === 200) ? {
           status: 2,
         } : {
@@ -60,7 +68,9 @@ async function secureProcess() {
       case 4: {
         const res = await request.deleteSecurePlatform(item);
 
-        const info = (res.status === 200) ? {
+        console.log('delete:', res.status, JSON.stringify(res.data));
+
+        const info = (res.status === 200 || res.status === 404 || res.status === 403) ? {
           status: 5,
         } : {
           status: 6,
@@ -77,6 +87,8 @@ async function secureProcess() {
       }
       case 5: {
         const res = await request.getSecurePlatform(item);
+
+        console.log('get2:', res.status, JSON.stringify(res.data));
 
         if (res.status === 404) {
           await db.getInstance()

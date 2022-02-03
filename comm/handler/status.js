@@ -40,6 +40,8 @@ exports.initHandler = (io, socket) => {
       Error.throwFail('ACCESS_DENIED', 'Access Denied');
     }
 
+    console.log('sql:', JSON.stringify(statusQuery.getStatus(payload)));
+
     const items = await db.getInstance()
       .query(statusQuery.getStatus(payload));
 
