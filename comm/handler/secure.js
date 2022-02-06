@@ -26,6 +26,20 @@ exports.rules = {
     sortDesc: { type: 'array' },
     filters: { type: 'array' },
   },
+  'secure.status.req': {
+    task: { type: 'string', allow: ['status'] },
+    filters: { type: 'array' },
+  },
+  'secure.status.summary.get': {
+    filters: { type: 'array' },
+  },
+  'secure.status.list.get': {
+    page: { type: 'number', min: 0 },
+    itemsPerPage: { type: 'number', max: 100 },
+    sortBy: { type: 'array' },
+    sortDesc: { type: 'array' },
+    filters: { type: 'array' },
+  },
 };
 
 exports.initHandler = (io, socket) => {
@@ -122,6 +136,65 @@ exports.initHandler = (io, socket) => {
 
     const items = await db.getInstance()
       .query(secureQuery.getSecureApply(payload));
+
+    resp({
+      result: 'success',
+      items,
+    });
+  });
+
+  onHandler(socket, 'secure.status.req', async (payload, resp) => {
+    const { userInfo } = socket.data;
+
+    if (userInfo == null || !userInfo.manager) {
+      Error.throwFail('ACCESS_DENIED', 'Access Denied');
+    }
+
+    const items = await db.getInstance()
+      .query(secureQuery.getSecureApply({
+        filters: payload.filters,
+        page: 1,
+        itemsPerPage: 1000,
+        sortBy: [],
+        sortDesc: [],
+      }));
+
+    await db.getInstance()
+      .query(secureQuery.addSecureTask({
+        items,
+        task: payload.task,
+      }));
+
+    await secureScheduler.beginSecureProcess();
+
+    resp({ result: 'success' });
+  });
+
+  onHandler(socket, 'secure.status.summary.get', async (payload, resp) => {
+    const { userInfo } = socket.data;
+
+    if (userInfo == null || !userInfo.manager) {
+      Error.throwFail('ACCESS_DENIED', 'Access Denied');
+    }
+
+    const item = await db.getInstance()
+      .query(secureQuery.summarySecureStatus(payload));
+
+    resp({
+      result: 'success',
+      item,
+    });
+  });
+
+  onHandler(socket, 'secure.status.list.get', async (payload, resp) => {
+    const { userInfo } = socket.data;
+
+    if (userInfo == null || !userInfo.manager) {
+      Error.throwFail('ACCESS_DENIED', 'Access Denied');
+    }
+
+    const items = await db.getInstance()
+      .query(secureQuery.getSecureStatus(payload));
 
     resp({
       result: 'success',

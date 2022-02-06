@@ -5,6 +5,7 @@ const secureQuery = require('../db/query/secure');
 const comm = require('../comm/index');
 
 let items = [];
+let taskItems = [];
 let handle = null;
 
 async function secureProcess() {
@@ -12,6 +13,11 @@ async function secureProcess() {
     // DB에서 목록 가져오기
     items = await db.getInstance()
       .query(secureQuery.getSecureProcessList({}));
+  }
+
+  if (taskItems.length === 0) {
+    taskItems = await db.getInstance()
+      .query(secureQuery.getSecureTaskList({}));
   }
 
   if (items.length > 0) {
@@ -110,6 +116,49 @@ async function secureProcess() {
     comm.getInstance().to('manager').emit('secure.process.notify', {
       remain: items.length,
     });
+
+    handle = setTimeout(secureProcess, 1000);
+  } else if (taskItems.length > 0) {
+    const [item] = taskItems.splice(0, 1);
+
+    switch (item.task) {
+      case 'status': {
+        const res = await request.getSecureStatus(item);
+
+        console.log('secure status:', res.status, JSON.stringify(res.data));
+
+        const updatedItem = (res.status === 200) ? {
+          no: item.no,
+          result: 1,
+        } : {
+          no: item.no,
+          result: 2,
+        };
+
+        // 정상 조회인 경우 상태 정보를 DB에 추가
+        if (updatedItem.result === 1) {
+          const status = res.data['m2m:cin'];
+          status.con = JSON.parse(status.con);
+
+          await db.getInstance()
+            .query(secureQuery.insertSecureStatus({
+              iccid: item.iccid,
+              ctn: item.ctn,
+              checkTime: status.ct,
+              flowTotal: status.con.mesurement_info.flow_total,
+              rssi: status.con.status.communication.RSSI,
+              reversedPulse: status.con.status.sensor.reversed_pulse,
+              lowMainBattery: status.con.status.battery.low_main_battery,
+            }));
+        }
+
+        await db.getInstance()
+          .query(secureQuery.updateSecureTask(updatedItem));
+        break;
+      }
+      default:
+        break;
+    }
 
     handle = setTimeout(secureProcess, 1000);
   } else {

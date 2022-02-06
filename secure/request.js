@@ -42,6 +42,20 @@ async function getSecurePlatform({ aei, entityId, serviceCode }) {
   });
 }
 
+async function getSecureStatus({ aei, entityId, serviceCode }) {
+  return axios({
+    url: `${host}/~/CB00053/uplus1-${serviceCode}/ae-${entityId.split('-')[2]}/cnt-ami-gasmeter-reading/la`,
+    headers: {
+      Accept: 'application/json',
+      'X-M2M-Origin': aei,
+      'X-M2M-RI': 12345,
+    },
+    method: 'get',
+    responseType: 'json',
+    validateStatus: () => true,
+  });
+}
+
 async function deleteSecurePlatform({ aei, entityId, serviceCode }) {
   return axios({
     url: `${host}/~/CB00053/uplus1-${serviceCode}/ae-${entityId.split('-')[2]}`,
@@ -57,4 +71,5 @@ async function deleteSecurePlatform({ aei, entityId, serviceCode }) {
 
 module.exports.insertSecurePlatform = insertSecurePlatform;
 module.exports.getSecurePlatform = getSecurePlatform;
+module.exports.getSecureStatus = getSecureStatus;
 module.exports.deleteSecurePlatform = deleteSecurePlatform;
