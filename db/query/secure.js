@@ -99,6 +99,18 @@ module.exports = {
       "WHERE ctn=:ctn AND iccid=:iccid",
     args,
   }),
+  getSecureProcessListCount: (args) => ({
+    sql:
+      "SELECT\n" +
+      "  COUNT(*) AS `count`\n" +
+      "FROM secure_apply\n" +
+      "JOIN products ON\n" +
+      "  products.iccid=secure_apply.iccid\n" +
+      "  AND products.ctn=secure_apply.ctn\n" +
+      "WHERE\n" +
+      "  `status` IN (0, 1, 4, 5)",
+    args,
+  }),
   getSecureProcessList: (args) => ({
     sql:
       "SELECT\n" +

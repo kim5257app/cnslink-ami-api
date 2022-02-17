@@ -20,7 +20,7 @@ exports.initHandler = (io, socket) => {
   onHandler(socket, 'status.summary.get', async (payload, resp) => {
     const { userInfo } = socket.data;
 
-    if (userInfo == null || !userInfo.manager) {
+    if (userInfo == null || !(userInfo.manager || userInfo.lookup)) {
       Error.throwFail('ACCESS_DENIED', 'Access Denied');
     }
 
@@ -36,7 +36,7 @@ exports.initHandler = (io, socket) => {
   onHandler(socket, 'status.list.get', async (payload, resp) => {
     const { userInfo } = socket.data;
 
-    if (userInfo == null || !userInfo.manager) {
+    if (userInfo == null || !(userInfo.manager || userInfo.lookup)) {
       Error.throwFail('ACCESS_DENIED', 'Access Denied');
     }
 

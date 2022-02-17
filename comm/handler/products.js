@@ -2,7 +2,6 @@ const db = require('../../db/index');
 const aftQuery = require('../../db/query/aft');
 const { onHandler } = require('../helper');
 const Error = require('../../debug/error');
-const ami = require('../../util/ami');
 
 exports.rules = {
   'products.summary.get': {
@@ -25,7 +24,7 @@ exports.initHandler = (io, socket) => {
   onHandler(socket, 'products.summary.get', async (payload, resp) => {
     const { userInfo } = socket.data;
 
-    if (userInfo == null || !userInfo.manager) {
+    if (userInfo == null || !(userInfo.manager || userInfo.lookup)) {
       Error.throwFail('ACCESS_DENIED', 'Access Denied');
     }
 
@@ -41,7 +40,7 @@ exports.initHandler = (io, socket) => {
   onHandler(socket, 'products.list.get', async (payload, resp) => {
     const { userInfo } = socket.data;
 
-    if (userInfo == null || !userInfo.manager) {
+    if (userInfo == null || !(userInfo.manager || userInfo.lookup)) {
       Error.throwFail('ACCESS_DENIED', 'Access Denied');
     }
 

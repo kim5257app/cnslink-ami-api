@@ -5,7 +5,10 @@ const secureQuery = require('../db/query/secure');
 const comm = require('../comm/index');
 
 let items = [];
+let itemsTotal = 0;
+
 let taskItems = [];
+
 let handle = null;
 
 async function secureProcess() {
@@ -13,6 +16,9 @@ async function secureProcess() {
     // DB에서 목록 가져오기
     items = await db.getInstance()
       .query(secureQuery.getSecureProcessList({}));
+
+    itemsTotal = (await db.getInstance()
+      .query(secureQuery.getSecureProcessListCount({}))) - items.length;
   }
 
   if (taskItems.length === 0) {
@@ -114,7 +120,7 @@ async function secureProcess() {
 
     // 처리 중 정보를 공지
     comm.getInstance().to('manager').emit('secure.process.notify', {
-      remain: items.length,
+      remain: items.length + itemsTotal,
     });
 
     handle = setTimeout(secureProcess, 1000);
@@ -159,6 +165,11 @@ async function secureProcess() {
       default:
         break;
     }
+
+    // 처리 중 정보를 공지
+    comm.getInstance().to('manager').emit('secure.status.notify', {
+      remain: taskItems.length,
+    });
 
     handle = setTimeout(secureProcess, 1000);
   } else {
