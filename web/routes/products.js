@@ -73,8 +73,8 @@ router.post('/file/xlsx', async (req, res) => {
       .query(aftQuery.getProducts({
         page: 1,
         itemsPerPage: 100000,
-        sortBy: [],
-        sortDesc: [],
+        sortBy: req.body.sortBy,
+        sortDesc: req.body.sortDesc,
         filters: req.body.filters,
       }));
 

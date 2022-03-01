@@ -38,8 +38,8 @@ router.post('/file/xlsx', async (req, res) => {
       .query(statusQuery.getStatus({
         page: 1,
         itemsPerPage: 100000,
-        sortBy: [],
-        sortDesc: [],
+        sortBy: req.body.sortBy,
+        sortDesc: req.body.sortDesc,
         filters: req.body.filters,
       }));
     res.status(200)
