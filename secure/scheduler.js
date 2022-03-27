@@ -37,7 +37,8 @@ async function secureProcess() {
 
         console.log('insert:', res.status, JSON.stringify(data));
 
-        const info = (res.status === 201 || res.status === 409) ? {
+        // eslint-disable-next-line no-underscore-dangle
+        const info = ((res.status === 201 || res.status === 409) && (data['m2m:ae'].ifs._text === '200')) ? {
           // eslint-disable-next-line no-underscore-dangle
           aei: data['m2m:ae'].aei._text,
           status: 1,
